@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, ChevronLeft, Sparkles, RefreshCcw } from 'lucide-react';
+import { ChevronLeft, RefreshCcw } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import Processing from './Processing';
 import GiftCard from './GiftCard';
-import { getSuggestions } from '../utils/affiliate';
 
 const STEPS = [
     {
@@ -77,7 +76,8 @@ const Wizard = () => {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to fetch suggestions');
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to fetch suggestions');
             }
 
             const results = await response.json();
@@ -85,10 +85,7 @@ const Wizard = () => {
             setShowResults(true);
         } catch (error) {
             console.error("Error fetching gifts:", error);
-            // Fallback or error handling could go here. 
-            // For now, we might want to set a simple error state or show a message.
-            // But to keep it simple as per request, we'll just log it.
-            alert("Ledsen, AI:n fick hjärnsläpp! Försök igen.");
+            alert(`Något gick fel: ${error.message}`);
         } finally {
             setIsProcessing(false);
         }

@@ -23,26 +23,35 @@ export default async function handler(req, res) {
       - Tillfälle: ${occasion}
       - Budget: ${budget} (Budget=billigt, Mellan=normalt, Premium=dyrt)
 
-      Svara ENDAST med en JSON-array. Ingenting annat.
-      Varje objekt i arrayen ska ha följande struktur:
-      {
-        "name": "Produktnamn",
-        "description": "En kort säljande beskrivning (max 2 meningar)",
-        "price": "Ungefärligt pris i SEK",
-        "category": "Kategori"
-      }
+      Svara ENDAST med ett giltigt JSON-objekt. Inget annat. Inga förklaringar eller markdown-taggar.
+      Strukturen ska vara en array av objekt så här:
+      [
+        {
+          "name": "Produktnamn",
+          "description": "En kort säljande beskrivning (max 2 meningar)",
+          "price": "Ungefärligt pris i SEK",
+          "category": "Kategori"
+        }
+      ]
     `;
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
         const text = response.text();
 
-        // Clean up potential markdown code blocks from the response
-        const jsonString = text.replace(/```json\n?|\n?```/g, '').trim();
+        // More robust JSON cleaning
+        let cleanText = text.trim();
+        if (cleanText.includes('```')) {
+            cleanText = cleanText.replace(/```json\n?|```\n?/g, '').trim();
+        }
 
-        const suggestions = JSON.parse(jsonString);
-
-        return res.status(200).json(suggestions);
+        try {
+            const suggestions = JSON.parse(cleanText);
+            return res.status(200).json(suggestions);
+        } catch (parseError) {
+            console.error('Failed to parse Gemini response:', text, parseError);
+            return res.status(500).json({ error: 'Invalid response format from AI' });
+        }
     } catch (error) {
         console.error('Error generating gifts:', error);
         return res.status(500).json({ error: 'Failed to generate gift suggestions' });

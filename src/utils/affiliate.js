@@ -31,7 +31,7 @@ export const MOCK_SUGGESTIONS = {
     ]
 };
 
-export const getSuggestions = (interest, budget) => {
+export const getSuggestions = (interest) => {
     const items = MOCK_SUGGESTIONS[interest] || MOCK_SUGGESTIONS['Teknik']; // Fallback
     // In a real app, we would filter by budget too. 
     // For now, we return a random subset or all.
