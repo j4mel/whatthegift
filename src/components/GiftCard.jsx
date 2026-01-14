@@ -4,7 +4,10 @@ import { generateAmazonLink } from '../utils/affiliate';
 import { motion } from 'framer-motion';
 
 const GiftCard = ({ product, index }) => {
-    const link = generateAmazonLink(product.name);
+    // Use AI-provided search term if available, otherwise fallback to title/name
+    const searchTerm = product.amazonSearchTerm || product.title || product.name;
+    const link = generateAmazonLink(searchTerm);
+    const displayName = product.title || product.name;
 
     return (
         <motion.div
@@ -17,7 +20,7 @@ const GiftCard = ({ product, index }) => {
                 {product.image ? (
                     <img
                         src={product.image}
-                        alt={product.name}
+                        alt={displayName}
                         className="h-full w-full object-contain hover:scale-105 transition-transform duration-300"
                     />
                 ) : (
@@ -27,7 +30,7 @@ const GiftCard = ({ product, index }) => {
                 )}
             </div>
 
-            <h3 className="text-xl font-bold text-gray-800 mb-2">{product.name}</h3>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">{displayName}</h3>
             <p className="text-gray-600 mb-6 flex-grow leading-relaxed">{product.description}</p>
 
             <a

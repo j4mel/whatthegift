@@ -59,15 +59,39 @@ const Wizard = () => {
         }
     };
 
-    const startProcessing = () => {
+    const startProcessing = async () => {
         setIsProcessing(true);
-        // Simulate AI thinking time
-        setTimeout(() => {
-            const results = getSuggestions(answers[2], answers[4]);
+
+        try {
+            const response = await fetch('/api/generate-gifts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    recipient: answers[1],
+                    interest: answers[2],
+                    occasion: answers[3],
+                    budget: answers[4]
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch suggestions');
+            }
+
+            const results = await response.json();
             setSuggestions(results);
-            setIsProcessing(false);
             setShowResults(true);
-        }, 2500);
+        } catch (error) {
+            console.error("Error fetching gifts:", error);
+            // Fallback or error handling could go here. 
+            // For now, we might want to set a simple error state or show a message.
+            // But to keep it simple as per request, we'll just log it.
+            alert("Ledsen, AI:n fick hjärnsläpp! Försök igen.");
+        } finally {
+            setIsProcessing(false);
+        }
     };
 
     const resetWizard = () => {
