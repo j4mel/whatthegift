@@ -105,15 +105,16 @@ const Wizard = () => {
                 </Helmet>
                 <div className="text-center mb-12">
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="inline-block p-2 px-4 bg-green-100 text-green-700 rounded-full font-medium mb-4"
+                        className="inline-block p-1 px-3 bg-emerald-50 text-emerald-700 rounded-md text-xs font-bold uppercase tracking-widest mb-4 border border-emerald-100"
                     >
-                        Hittade {suggestions.length} perfekta presenter!
+                        Rekommenderade gåvor
                     </motion.div>
-                    <h2 className="text-3xl font-bold text-gray-800">
-                        För {answers[1].toLowerCase()} med profil {answers[3].toLowerCase()}
+                    <h2 className="text-4xl font-bold text-slate-900 leading-tight tracking-tight">
+                        Företagsgåvor för {answers[1].toLowerCase()}
                     </h2>
+                    <p className="text-slate-500 mt-2 font-medium">Baserat på profil: {answers[3].toLowerCase()}</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
@@ -122,12 +123,18 @@ const Wizard = () => {
                     ))}
                 </div>
 
-                <div className="text-center">
+                <div className="flex flex-col md:flex-row items-center justify-center gap-4">
                     <button
-                        onClick={resetWizard}
-                        className="inline-flex items-center gap-2 text-gray-500 hover:text-purple-600 font-medium transition-colors px-6 py-3 rounded-xl hover:bg-purple-50"
+                        onClick={startProcessing}
+                        className="inline-flex items-center gap-2 bg-emerald-600 text-white font-bold py-3 px-8 rounded-xl hover:bg-emerald-700 transition-all active:scale-95 shadow-lg shadow-emerald-100"
                     >
                         <RefreshCcw size={18} />
+                        Hämta 3 nya förslag
+                    </button>
+                    <button
+                        onClick={resetWizard}
+                        className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 font-medium transition-colors px-6 py-3 rounded-xl hover:bg-slate-50"
+                    >
                         Börja om
                     </button>
                 </div>
@@ -145,67 +152,65 @@ const Wizard = () => {
                 <meta name="description" content="AI-driven presentgenerator. Hitta personliga presenter på några sekunder." />
             </Helmet>
             {/* Progress Bar */}
-            <div className="mb-8 bg-gray-200 h-2 rounded-full overflow-hidden">
+            <div className="mb-12 bg-slate-100 h-1 rounded-full overflow-hidden">
                 <motion.div
-                    className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
+                    className="h-full bg-emerald-500"
                     initial={{ width: 0 }}
                     animate={{ width: `${progress}%` }}
-                    transition={{ duration: 0.5 }}
+                    transition={{ duration: 0.8, ease: "circOut" }}
                 />
             </div>
 
             <AnimatePresence mode="wait">
                 <motion.div
                     key={currentStep}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.3 }}
-                    className="bg-white rounded-3xl shadow-xl p-8 md:p-12 relative overflow-hidden"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.4 }}
+                    className="bg-white rounded-2xl shadow-sm border border-slate-100 p-10 md:p-16 relative overflow-hidden"
                 >
-                    {/* Decorative background circle */}
-                    <div className="absolute -top-20 -right-20 w-64 h-64 bg-purple-50 rounded-full blur-3xl -z-0" />
-
                     <div className="relative z-10">
-                        <div className="flex justify-between items-center mb-8">
-                            <span className="text-sm font-bold text-purple-500 uppercase tracking-wider">
-                                Fråga {currentStep} av {STEPS.length}
+                        <div className="flex justify-between items-center mb-12">
+                            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                                Steg {currentStep} / {STEPS.length}
                             </span>
                             {currentStep > 1 && (
                                 <button
                                     onClick={handleBack}
-                                    className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+                                    className="text-slate-400 hover:text-slate-900 transition-colors flex items-center gap-1 text-sm font-medium"
                                 >
-                                    <ChevronLeft size={20} />
+                                    <ChevronLeft size={16} />
+                                    Bakåt
                                 </button>
                             )}
                         </div>
 
-                        <h2 className="text-3xl font-bold text-gray-800 mb-8 leading-tight">
+                        <h2 className="text-4xl font-bold text-slate-900 mb-10 leading-tight tracking-tight">
                             {currentStepData.question}
                         </h2>
 
-                        <div className="grid grid-cols-1 gap-3">
+                        <div className="grid grid-cols-1 gap-4">
                             {currentStepData.options.map((option) => (
                                 <button
                                     key={option}
                                     onClick={() => handleOptionSelect(option)}
                                     className={`
-                    w-full text-left p-4 rounded-xl border-2 transition-all duration-200 flex items-center justify-between group
-                    ${answers[currentStep] === option
-                                            ? 'border-purple-500 bg-purple-50 text-purple-900'
-                                            : 'border-gray-100 hover:border-purple-200 hover:bg-gray-50 text-gray-700'}
-                  `}
+                                        w-full text-left p-6 rounded-xl border transition-all duration-300 flex items-center justify-between group
+                                        ${answers[currentStep] === option
+                                            ? 'border-emerald-500 bg-emerald-50/30 text-emerald-900 shadow-sm shadow-emerald-100'
+                                            : 'border-slate-100 hover:border-slate-300 hover:bg-slate-50 text-slate-700'}
+                                    `}
                                 >
-                                    <span className="font-semibold">{option}</span>
+                                    <span className="font-semibold text-lg">{option}</span>
                                     <div className={`
-                    w-6 h-6 rounded-full border-2 flex items-center justify-center
-                    ${answers[currentStep] === option
-                                            ? 'border-purple-500 bg-purple-500'
-                                            : 'border-gray-300 group-hover:border-purple-300'}
-                  `}>
+                                        w-5 h-5 rounded-full border transition-all duration-300 flex items-center justify-center
+                                        ${answers[currentStep] === option
+                                            ? 'border-emerald-500 bg-emerald-500'
+                                            : 'border-slate-200 group-hover:border-slate-400'}
+                                    `}>
                                         {answers[currentStep] === option && (
-                                            <div className="w-2 h-2 bg-white rounded-full" />
+                                            <div className="w-1.5 h-1.5 bg-white rounded-full" />
                                         )}
                                     </div>
                                 </button>
