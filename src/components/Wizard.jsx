@@ -171,46 +171,46 @@ const Wizard = () => {
                     className="bg-white rounded-2xl shadow-sm border border-slate-100 p-10 md:p-16 relative overflow-hidden"
                 >
                     <div className="relative z-10">
-                        <div className="flex justify-between items-center mb-12">
-                            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                                Steg {currentStep} / {STEPS.length}
+                        <div className="flex justify-between items-center mb-16">
+                            <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">
+                                {currentStep} / {STEPS.length}
                             </span>
                             {currentStep > 1 && (
                                 <button
                                     onClick={handleBack}
-                                    className="text-slate-400 hover:text-slate-900 transition-colors flex items-center gap-1 text-sm font-medium"
+                                    className="text-slate-400 hover:text-slate-900 transition-colors flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider"
                                 >
-                                    <ChevronLeft size={16} />
+                                    <ChevronLeft size={14} />
                                     Bakåt
                                 </button>
                             )}
                         </div>
 
-                        <h2 className="text-4xl font-bold text-slate-900 mb-10 leading-tight tracking-tight">
+                        <h2 className="text-4xl font-extrabold text-slate-900 mb-12 leading-[1.1] tracking-tight">
                             {currentStepData.question}
                         </h2>
 
-                        <div className="grid grid-cols-1 gap-4">
+                        <div className="grid grid-cols-1 gap-3">
                             {currentStepData.options.map((option) => (
                                 <button
                                     key={option}
                                     onClick={() => handleOptionSelect(option)}
                                     className={`
-                                        w-full text-left p-6 rounded-xl border transition-all duration-300 flex items-center justify-between group
+                                        w-full text-left p-6 rounded-2xl border-2 transition-all duration-300 flex items-center justify-between group
                                         ${answers[currentStep] === option
-                                            ? 'border-emerald-500 bg-emerald-50/30 text-emerald-900 shadow-sm shadow-emerald-100'
-                                            : 'border-slate-100 hover:border-slate-300 hover:bg-slate-50 text-slate-700'}
+                                            ? 'border-emerald-500 bg-emerald-50/20 text-emerald-900'
+                                            : 'border-slate-50 hover:border-slate-200 hover:bg-slate-50 text-slate-600'}
                                     `}
                                 >
-                                    <span className="font-semibold text-lg">{option}</span>
+                                    <span className="font-bold text-lg tracking-tight">{option}</span>
                                     <div className={`
-                                        w-5 h-5 rounded-full border transition-all duration-300 flex items-center justify-center
+                                        w-6 h-6 rounded-full border-2 transition-all duration-300 flex items-center justify-center
                                         ${answers[currentStep] === option
-                                            ? 'border-emerald-500 bg-emerald-500'
-                                            : 'border-slate-200 group-hover:border-slate-400'}
+                                            ? 'border-emerald-500 bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.1)]'
+                                            : 'border-slate-200 group-hover:border-slate-300'}
                                     `}>
                                         {answers[currentStep] === option && (
-                                            <div className="w-1.5 h-1.5 bg-white rounded-full" />
+                                            <div className="w-2 h-2 bg-white rounded-full" />
                                         )}
                                     </div>
                                 </button>
