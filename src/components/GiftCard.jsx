@@ -18,7 +18,7 @@ const GiftCard = ({ product, index }) => {
         >
             <div className="w-full h-48 mb-4 overflow-hidden rounded-xl bg-gray-50 flex items-center justify-center p-0">
                 <img
-                    src={`https://images.unsplash.com/photo-1?utm_source=unsplash&q=80&w=400&h=400&fit=crop&auto=format&keywords=${encodeURIComponent(displayName)}`}
+                    src={`https://images.unsplash.com/photo-1?utm_source=unsplash&q=80&w=400&h=400&fit=crop&auto=format&keywords=corporate+gift+${encodeURIComponent(displayName)}`}
                     alt={displayName}
                     className="h-full w-full object-cover hover:scale-110 transition-transform duration-500"
                     onError={(e) => {

@@ -7,8 +7,6 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const { recipient, interest, occasion, budget } = req.body;
-
     if (!process.env.GEMINI_API_KEY) {
         return res.status(500).json({ error: 'Server configuration error: Missing API Key' });
     }
@@ -17,15 +15,19 @@ export default async function handler(req, res) {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
-        const prompt = `
-      Du är en expert på att ge presenttips.
-      Ge mig 3 kreativa, roliga och passande presenttips baserat på följande info:
-      - Mottagare: ${recipient}
-      - Intresse: ${interest}
-      - Tillfälle: ${occasion}
-      - Budget: ${budget} (Budget=billigt, Mellan=normalt, Premium=dyrt)
+        const { recipient, budget, profile } = req.body;
 
-      VIKTIGT: Namnet på produkten ("name") ska vara kort, rent och utan specialtecken (t.ex. "Lego Star Wars" istället för "Lego Star Wars™: The Skywalker Saga"). Detta är för att bildsökning och Amazon-länken ska fungera optimalt.
+        const prompt = `
+      Du är en "Corporate Gifting Expert". Din uppgift är att föreslå de bästa gåvorna för företagssammanhang (B2B).
+      Ge mig 3 kreativa, professionella och passande presenttips baserat på följande info:
+      - Mottagare: ${recipient} (t.ex. personal eller kund)
+      - Budget: ${budget} per gåva
+      - Profil: ${profile} (t.g. hållbarhet, lyx eller teknik)
+
+      VIKTIGT: 
+      1. Namnet på produkten ("name") ska vara kort, rent och utan specialtecken.
+      2. Föreslå produkter som ofta finns i stora lager på Amazon och passar för företag.
+      3. Tänk på att gåvorna ska kännas professionella och uppskattade i ett affärssammanhang.
 
       Svara ENDAST med ett giltigt JSON-objekt. Inget annat. Inga förklaringar eller markdown-taggar.
       Strukturen ska vara en array av objekt så här:

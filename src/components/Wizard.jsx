@@ -9,22 +9,17 @@ const STEPS = [
     {
         id: 1,
         question: "Vem är mottagaren?",
-        options: ["Partner", "Vän", "Barn", "Kollega", "Förälder", "Syskon"]
+        options: ["Personal", "Kund", "Event"]
     },
     {
         id: 2,
-        question: "Vad är intresset?",
-        options: ["Teknik", "Matlagning", "Gaming", "Trädgård", "Inredning", "Sport"]
+        question: "Vad är er budget per gåva?",
+        options: ["Under 500 kr", "500-1000 kr", "1000 kr+"]
     },
     {
         id: 3,
-        question: "Vilket är tillfället?",
-        options: ["Födelsedag", "Bröllop", "Bara för att", "Inflyttning", "Jul"]
-    },
-    {
-        id: 4,
-        question: "Budgetnivå?",
-        options: ["Budget", "Mellan", "Premium"]
+        question: "Vilken profil söker ni?",
+        options: ["Hållbart/Eko", "Teknik/Kontor", "Lyx/Hem"]
     }
 ];
 
@@ -69,9 +64,8 @@ const Wizard = () => {
                 },
                 body: JSON.stringify({
                     recipient: answers[1],
-                    interest: answers[2],
-                    occasion: answers[3],
-                    budget: answers[4]
+                    budget: answers[2],
+                    profile: answers[3]
                 }),
             });
 
@@ -118,7 +112,7 @@ const Wizard = () => {
                         Hittade {suggestions.length} perfekta presenter!
                     </motion.div>
                     <h2 className="text-3xl font-bold text-gray-800">
-                        För din {answers[1].toLowerCase()} som gillar {answers[2].toLowerCase()}
+                        För {answers[1].toLowerCase()} med profil {answers[3].toLowerCase()}
                     </h2>
                 </div>
 
