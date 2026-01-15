@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 
     try {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
         const prompt = `
       Du är en expert på att ge presenttips.
@@ -24,6 +24,8 @@ export default async function handler(req, res) {
       - Intresse: ${interest}
       - Tillfälle: ${occasion}
       - Budget: ${budget} (Budget=billigt, Mellan=normalt, Premium=dyrt)
+
+      VIKTIGT: Namnet på produkten ("name") ska vara kort, rent och utan specialtecken (t.ex. "Lego Star Wars" istället för "Lego Star Wars™: The Skywalker Saga"). Detta är för att bildsökning och Amazon-länken ska fungera optimalt.
 
       Svara ENDAST med ett giltigt JSON-objekt. Inget annat. Inga förklaringar eller markdown-taggar.
       Strukturen ska vara en array av objekt så här:

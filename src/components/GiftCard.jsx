@@ -16,18 +16,16 @@ const GiftCard = ({ product, index }) => {
             transition={{ delay: index * 0.1 }}
             className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6 flex flex-col items-center text-center border border-gray-100 h-full transform hover:-translate-y-1"
         >
-            <div className="w-full h-48 mb-4 overflow-hidden rounded-xl bg-gray-50 flex items-center justify-center p-4">
-                {product.image ? (
-                    <img
-                        src={product.image}
-                        alt={displayName}
-                        className="h-full w-full object-contain hover:scale-105 transition-transform duration-300"
-                    />
-                ) : (
-                    <div className="w-16 h-16 bg-gradient-to-br from-yellow-100 to-orange-100 rounded-full flex items-center justify-center text-orange-500">
-                        <Tag size={32} />
-                    </div>
-                )}
+            <div className="w-full h-48 mb-4 overflow-hidden rounded-xl bg-gray-50 flex items-center justify-center p-0">
+                <img
+                    src={`https://images.unsplash.com/photo-1?utm_source=unsplash&q=80&w=400&h=400&fit=crop&auto=format&keywords=${encodeURIComponent(displayName)}`}
+                    alt={displayName}
+                    className="h-full w-full object-cover hover:scale-110 transition-transform duration-500"
+                    onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=400&h=400&fit=crop";
+                    }}
+                />
             </div>
 
             <h3 className="text-xl font-bold text-gray-800 mb-2">{displayName}</h3>
