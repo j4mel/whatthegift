@@ -24,11 +24,11 @@ export default async function handler(req, res) {
       - Budget: ${budget} per gåva
       - Profil: ${profile}
 
-      VIKTIGT FÖR SÖKBARHET: 
-      1. Namnet på produkten ("name") ska vara EXTREMT RENT och kort (MAX 3-4 ord).
-      2. Inkludera ALDRIG ord som "${profile}", "${recipient}", eller kategorinamn i själva namnet ("name").
-      3. Exempel på bra namn: "Vattenflaska i stål", "Trådlös laddstation", "Lyxig anteckningsbok".
-      4. Föreslå produkter som ofta finns i stora lager på Amazon och passar för företag.
+      VIKTIGT FÖR BILD-SÖKBARHET: 
+      1. "name" ska vara ENDAST själva produkten. Inget annat.
+      2. Inkludera ALDRIG ord som "${profile}", "${recipient}", "Present", Categorinamn eller liknande i "name".
+      3. "name" ska vara så kort som möjligt (1-3 ord).
+      4. Exempel: Istället för "Hållbar Vattenflaska för Personal" svara bara "Vattenflaska". Istället för "Teknisk Laddningsplatta" svara "Trådlös laddare".
 
       Svara ENDAST med ett giltigt JSON-objekt. Inget annat.
       Strukturen ska vara en array av objekt så här:
