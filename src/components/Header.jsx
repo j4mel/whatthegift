@@ -13,9 +13,6 @@ const Header = () => {
                         <h1 className="text-2xl font-black text-slate-900 tracking-tighter leading-none">
                             WhatTheGift
                         </h1>
-                        <span className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.3em] mt-1.5">
-                            Corporate Edition
-                        </span>
                     </div>
                 </div>
 

@@ -200,8 +200,7 @@ const Wizard = () => {
             </Helmet>
 
             <div className="mb-12">
-                <div className="flex justify-between items-center mb-4 px-2">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Din resa</span>
+                <div className="flex justify-end items-center mb-4 px-2">
                     <span className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em]">{Math.round(progress)}% komplett</span>
                 </div>
                 <div className="bg-slate-100 h-1.5 rounded-full overflow-hidden p-[1px]">
