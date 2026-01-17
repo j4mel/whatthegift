@@ -29,6 +29,7 @@ const Wizard = () => {
     const [isProcessing, setIsProcessing] = useState(false);
     const [showResults, setShowResults] = useState(false);
     const [suggestions, setSuggestions] = useState([]);
+    const [cache, setCache] = useState({});
 
     const handleOptionSelect = (option) => {
         setAnswers(prev => ({ ...prev, [currentStep]: option }));
@@ -54,6 +55,18 @@ const Wizard = () => {
     };
 
     const startProcessing = async () => {
+        const cacheKey = JSON.stringify({
+            recipient: answers[1],
+            budget: answers[2],
+            profile: answers[3]
+        });
+
+        if (cache[cacheKey]) {
+            setSuggestions(cache[cacheKey]);
+            setShowResults(true);
+            return;
+        }
+
         setIsProcessing(true);
 
         try {
@@ -76,6 +89,7 @@ const Wizard = () => {
 
             const results = await response.json();
             setSuggestions(results);
+            setCache(prev => ({ ...prev, [cacheKey]: results }));
             setShowResults(true);
         } catch (error) {
             console.error("Error fetching gifts:", error);

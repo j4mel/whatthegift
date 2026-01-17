@@ -8,8 +8,11 @@ const GiftCard = ({ product, index }) => {
     const cleanName = displayName.replace(/[^\w\s-]/gi, '').trim();
     const searchTopic = encodeURIComponent(cleanName);
 
-    // Using LoremFlickr for reliable keyword-based professional images
-    const imageUrl = `https://loremflickr.com/800/800/${searchTopic},gift/all`;
+    // Using base64 data from Gemini with a high-quality fallback
+    const imageUrl = product.image_base64
+        ? `data:image/png;base64,${product.image_base64}`
+        : `https://images.unsplash.com/photo-1549463591-147604343a30?q=80&w=800&h=800&fit=crop`;
+
     const backupImageUrl = `https://images.unsplash.com/photo-1549463591-147604343a30?q=80&w=800&h=800&fit=crop`;
 
     const link = generateAmazonLink(displayName);

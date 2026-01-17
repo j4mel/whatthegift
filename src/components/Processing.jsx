@@ -5,6 +5,7 @@ const Processing = () => {
     const messages = [
         "AI:n tänker så det knakar...",
         "Scannar av de bästa alternativen...",
+        "AI:n skapar unika produktbilder...",
         "Hittar presenter som imponerar...",
         "Nästan klar nu..."
     ];

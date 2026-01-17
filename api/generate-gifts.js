@@ -24,11 +24,11 @@ export default async function handler(req, res) {
       - Budget: ${budget} per gåva
       - Profil: ${profile}
 
-      VIKTIGT FÖR BILD-SÖKBARHET: 
-      1. "name" ska vara ENDAST själva produkten. Inget annat.
-      2. Inkludera ALDRIG ord som "${profile}", "${recipient}", "Present", Categorinamn eller liknande i "name".
-      3. "name" ska vara så kort som möjligt (1-3 ord).
-      4. Exempel: Istället för "Hållbar Vattenflaska för Personal" svara bara "Vattenflaska". Istället för "Teknisk Laddningsplatta" svara "Trådlös laddare".
+      VIKTIGT FÖR BILDER OCH NAMN: 
+      1. För varje present, generera även en realistisk, proffsig och inspirerande bild (512x512 pixlar).
+      2. Inkludera bilden som en base64-kodad PNG-sträng i fältet "image_base64".
+      3. Om bildgenerering av någon anledning inte är möjlig, lämna "image_base64" som en tom sträng ("").
+      4. "name" ska vara kort och rent (1-3 ord).
 
       Svara ENDAST med ett giltigt JSON-objekt. Inget annat.
       Strukturen ska vara en array av objekt så här:
@@ -37,7 +37,8 @@ export default async function handler(req, res) {
           "name": "Produktnamn",
           "description": "En kort säljande beskrivning (max 2 meningar)",
           "price": "Ungefärligt pris i SEK",
-          "category": "Kategori"
+          "category": "Kategori",
+          "image_base64": "BASE64_STRÄNG_HÄR"
         }
       ]
     `;
