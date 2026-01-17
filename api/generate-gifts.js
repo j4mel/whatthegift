@@ -25,10 +25,8 @@ export default async function handler(req, res) {
       - Profil: ${profile}
 
       VIKTIGT FÖR BILDER OCH NAMN: 
-      1. För varje present, generera även en realistisk, proffsig och inspirerande bild (512x512 pixlar).
-      2. Inkludera bilden som en base64-kodad PNG-sträng i fältet "image_base64".
-      3. Om bildgenerering av någon anledning inte är möjlig, lämna "image_base64" som en tom sträng ("").
-      4. "name" ska vara kort och rent (1-3 ord).
+      1. För varje present, skapa en "image_prompt" (på ENGELSKA, 5-8 ord) som beskriver en realistisk och proffsig produktbild.
+      2. "name" ska vara kort och rent (1-3 ord).
 
       Svara ENDAST med ett giltigt JSON-objekt. Inget annat.
       Strukturen ska vara en array av objekt så här:
@@ -38,7 +36,7 @@ export default async function handler(req, res) {
           "description": "En kort säljande beskrivning (max 2 meningar)",
           "price": "Ungefärligt pris i SEK",
           "category": "Kategori",
-          "image_base64": "BASE64_STRÄNG_HÄR"
+          "image_prompt": "Descriptive product photo prompt in English"
         }
       ]
     `;
@@ -55,7 +53,17 @@ export default async function handler(req, res) {
 
         try {
             const suggestions = JSON.parse(cleanText);
-            return res.status(200).json(suggestions);
+
+            // Add AI-generated image URLs using Pollinations.ai
+            const suggestionsWithImages = suggestions.map(item => {
+                const encodedPrompt = encodeURIComponent(`${item.image_prompt}, professional product photography, clean background, high resolution`);
+                return {
+                    ...item,
+                    image_url: `https://image.pollinations.ai/prompt/${encodedPrompt}?width=800&height=800&nologo=true&model=flux`
+                };
+            });
+
+            return res.status(200).json(suggestionsWithImages);
         } catch (parseError) {
             console.error('Failed to parse Gemini response:', text, parseError);
             return res.status(500).json({ error: 'Invalid response format from AI' });
