@@ -96,51 +96,6 @@ const Wizard = () => {
         return <Processing />;
     }
 
-    if (showResults) {
-        return (
-            <div className="max-w-4xl mx-auto">
-                <Helmet>
-                    <title>Perfekta Presenter till {answers[1]} | WhatTheGift</title>
-                    <meta name="description" content={`Hittade ${suggestions.length} presentförslag till ${answers[1]} som gillar ${answers[2]}.`} />
-                </Helmet>
-                <div className="text-center mb-12">
-                    <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="inline-block p-1 px-3 bg-emerald-50 text-emerald-700 rounded-md text-xs font-bold uppercase tracking-widest mb-4 border border-emerald-100"
-                    >
-                        Rekommenderade gåvor
-                    </motion.div>
-                    <h2 className="text-4xl font-bold text-slate-900 leading-tight tracking-tight">
-                        Företagsgåvor för {answers[1].toLowerCase()}
-                    </h2>
-                    <p className="text-slate-500 mt-2 font-medium">Baserat på profil: {answers[3].toLowerCase()}</p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                    {suggestions.map((item, index) => (
-                        <GiftCard key={index} product={item} index={index} />
-                    ))}
-                </div>
-
-                <div className="flex flex-col md:flex-row items-center justify-center gap-4">
-                    <button
-                        onClick={startProcessing}
-                        className="inline-flex items-center gap-2 bg-emerald-600 text-white font-bold py-3 px-8 rounded-xl hover:bg-emerald-700 transition-all active:scale-95 shadow-lg shadow-emerald-100"
-                    >
-                        <RefreshCcw size={18} />
-                        Hämta 3 nya förslag
-                    </button>
-                    <button
-                        onClick={resetWizard}
-                        className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 font-medium transition-colors px-6 py-3 rounded-xl hover:bg-slate-50"
-                    >
-                        Börja om
-                    </button>
-                </div>
-            </div>
-        );
-    }
 
     const currentStepData = STEPS[currentStep - 1];
     const progress = ((currentStep - 1) / STEPS.length) * 100;
