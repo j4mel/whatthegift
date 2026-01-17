@@ -5,10 +5,11 @@ import { motion } from 'framer-motion';
 
 const GiftCard = ({ product, index }) => {
     const displayName = product.title || product.name;
-    const searchTopic = encodeURIComponent(displayName);
+    const cleanName = displayName.replace(/[^\w\s-]/gi, '').trim();
+    const searchTopic = encodeURIComponent(cleanName);
 
-    // Using a more reliable image strategy: specific professional gift photos with keywords
-    const imageUrl = `https://source.unsplash.com/featured/800x800?product,${searchTopic},corporate`;
+    // Using the specific Unsplash URL template as requested
+    const imageUrl = `https://images.unsplash.com/photo-1?utm_source=unsplash&q=80&w=800&h=800&fit=crop&auto=format&keywords=${searchTopic}`;
     const backupImageUrl = `https://images.unsplash.com/photo-1549463591-147604343a30?q=80&w=800&h=800&fit=crop`;
 
     const link = generateAmazonLink(displayName);
@@ -22,7 +23,7 @@ const GiftCard = ({ product, index }) => {
         >
             <div className="relative aspect-[4/3] overflow-hidden bg-slate-100/50">
                 <img
-                    src={`https://source.unsplash.com/featured/600x600?${searchTopic},gift`}
+                    src={imageUrl}
                     alt={displayName}
                     className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
                     onError={(e) => {
@@ -36,11 +37,6 @@ const GiftCard = ({ product, index }) => {
             </div>
 
             <div className="p-8 flex flex-col flex-grow">
-                <div className="flex items-center gap-2 mb-3">
-                    <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-[10px] font-bold text-emerald-600 uppercase tracking-wider border border-emerald-100/50">
-                        {product.category || 'Företag'}
-                    </span>
-                </div>
                 <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-emerald-600 transition-colors tracking-tight leading-tight">
                     {displayName}
                 </h3>

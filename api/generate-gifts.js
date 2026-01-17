@@ -20,16 +20,17 @@ export default async function handler(req, res) {
         const prompt = `
       Du är en "Corporate Gifting Expert". Din uppgift är att föreslå de bästa gåvorna för företagssammanhang (B2B).
       Ge mig 3 kreativa, professionella och passande presenttips baserat på följande info:
-      - Mottagare: ${recipient} (t.ex. personal eller kund)
+      - Mottagare: ${recipient}
       - Budget: ${budget} per gåva
-      - Profil: ${profile} (t.g. hållbarhet, lyx eller teknik)
+      - Profil: ${profile}
 
-      VIKTIGT: 
-      1. Namnet på produkten ("name") ska vara kort, rent och utan specialtecken.
-      2. Föreslå produkter som ofta finns i stora lager på Amazon och passar för företag.
-      3. Tänk på att gåvorna ska kännas professionella och uppskattade i ett affärssammanhang.
+      VIKTIGT FÖR SÖKBARHET: 
+      1. Namnet på produkten ("name") ska vara EXTREMT RENT och kort (MAX 3-4 ord).
+      2. Inkludera ALDRIG ord som "${profile}", "${recipient}", eller kategorinamn i själva namnet ("name").
+      3. Exempel på bra namn: "Vattenflaska i stål", "Trådlös laddstation", "Lyxig anteckningsbok".
+      4. Föreslå produkter som ofta finns i stora lager på Amazon och passar för företag.
 
-      Svara ENDAST med ett giltigt JSON-objekt. Inget annat. Inga förklaringar eller markdown-taggar.
+      Svara ENDAST med ett giltigt JSON-objekt. Inget annat.
       Strukturen ska vara en array av objekt så här:
       [
         {

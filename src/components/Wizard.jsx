@@ -161,9 +161,8 @@ const Wizard = () => {
                         Rekommenderade gåvor
                     </motion.div>
                     <h2 className="text-5xl md:text-6xl font-extrabold text-slate-900 leading-[1.1] tracking-tight mb-4">
-                        Företagsgåvor för <span className="text-emerald-600">{answers[1].toLowerCase()}</span>
+                        Hittade 3 perfekta presenter!
                     </h2>
-                    <p className="text-slate-500 text-lg font-medium">Baserat på profil: <span className="text-slate-900 uppercase tracking-wide text-sm">{answers[3]}</span></p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
