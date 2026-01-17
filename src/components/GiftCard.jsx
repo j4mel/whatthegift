@@ -5,41 +5,46 @@ import { motion } from 'framer-motion';
 
 const GiftCard = ({ product, index }) => {
     const displayName = product.title || product.name;
-    // Use a clean search term for high-quality professional photos
     const searchTopic = encodeURIComponent(displayName);
-    const imageUrl = `https://source.unsplash.com/featured/800x800?corporate,gift,${searchTopic}`;
-    // Fallback using Unsplash Source redirect pattern (often works better when concatenated)
-    const backupImageUrl = `https://images.unsplash.com/photo-1549463591-147604343a30?q=80&w=400&h=400&fit=crop`;
+
+    // Using a more reliable image strategy: specific professional gift photos with keywords
+    const imageUrl = `https://source.unsplash.com/featured/800x800?product,${searchTopic},corporate`;
+    const backupImageUrl = `https://images.unsplash.com/photo-1549463591-147604343a30?q=80&w=800&h=800&fit=crop`;
 
     const link = generateAmazonLink(displayName);
 
     return (
         <motion.div
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1, ease: "circOut" }}
-            className="bg-white rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.1)] transition-all duration-700 overflow-hidden flex flex-col h-full group"
+            transition={{ delay: index * 0.15, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="group relative flex flex-col h-full bg-white/40 backdrop-blur-xl border border-white/40 rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] hover:-translate-y-1"
         >
-            <div className="relative w-full h-64 bg-slate-50 overflow-hidden">
+            <div className="relative aspect-[4/3] overflow-hidden bg-slate-100/50">
                 <img
-                    src={`https://loremflickr.com/g/600/600/gift,${searchTopic}/all`}
+                    src={`https://source.unsplash.com/featured/600x600?${searchTopic},gift`}
                     alt={displayName}
-                    className="h-full w-full object-cover transition-all duration-1000 group-hover:scale-105"
+                    className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
                     onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = backupImageUrl;
                     }}
                 />
-                <div className="absolute top-4 right-4 backdrop-blur-md bg-white/70 px-4 py-1.5 rounded-full text-xs font-bold text-slate-900 border border-white/20 shadow-sm">
+                <div className="absolute top-4 right-4 glass px-4 py-2 rounded-2xl text-xs font-bold text-slate-900 border border-white/40 shadow-sm">
                     {product.price}
                 </div>
             </div>
 
             <div className="p-8 flex flex-col flex-grow">
+                <div className="flex items-center gap-2 mb-3">
+                    <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-[10px] font-bold text-emerald-600 uppercase tracking-wider border border-emerald-100/50">
+                        {product.category || 'Företag'}
+                    </span>
+                </div>
                 <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-emerald-600 transition-colors tracking-tight leading-tight">
                     {displayName}
                 </h3>
-                <p className="text-slate-500 text-sm mb-8 flex-grow leading-relaxed">
+                <p className="text-slate-500 text-sm mb-8 flex-grow leading-relaxed line-clamp-3">
                     {product.description}
                 </p>
 
@@ -47,10 +52,12 @@ const GiftCard = ({ product, index }) => {
                     href={link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full inline-flex items-center justify-center gap-2 bg-slate-900 text-white font-bold py-4 px-6 rounded-xl hover:bg-emerald-600 transition-all active:scale-[0.98] shadow-xl shadow-slate-100"
+                    className="relative w-full overflow-hidden group/btn"
                 >
-                    <span className="tracking-tight">Se på Amazon</span>
-                    <ExternalLink size={16} />
+                    <div className="flex items-center justify-center gap-2 bg-slate-900 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 group-hover/btn:bg-emerald-600 group-hover/btn:scale-[1.02] active:scale-[0.98]">
+                        <span className="tracking-tight">Se på Amazon</span>
+                        <ExternalLink size={16} className="transition-transform group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1" />
+                    </div>
                 </a>
             </div>
         </motion.div>
