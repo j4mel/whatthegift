@@ -13,8 +13,9 @@ export default async function handler(req, res) {
 
     try {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        // Use explicit model path
-        const model = genAI.getGenerativeModel({ model: "models/gemini-2.5-flash-image" });
+        // Using gemini-1.5-flash as it has the most stable quota for free tier
+        // gemini-2.5-flash-image appears to have 0 quota for this key
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const { recipient, budget, profile } = req.body;
 
@@ -25,11 +26,10 @@ export default async function handler(req, res) {
       - Budget: ${budget} per gåva
       - Profil: ${profile}
 
-      VIKTIGT FÖR BILDER OCH FORMAT: 
-      1. Generera en unik bild för varje present. 
-      2. Varje bild MÅSTE vara exakt 512x512 pixlar för att optimera prestanda och hålla nere Base64-storleken (för att undvika Vercels payload-gränser).
-      3. Returnera bilden som en ren Base64-kodad PNG-sträng i fältet "image_base64".
-      4. "name" ska vara kort och rent (1-3 ord).
+      VIKTIGT FÖR FORMAT: 
+      1. Ge mig 3 förslag.
+      2. "name" ska vara kort och rent (1-3 ord).
+      3. "image_keyword" ska vara ett engelskt ord eller kort fras (1-2 ord) som bäst beskriver produkten för en bildsökning (t.ex. "leather notebook", "premium coffee").
 
       Svara ENDAST med ett giltigt JSON-objekt. Inget annat.
       Strukturen ska vara en array av objekt så här:
@@ -39,7 +39,7 @@ export default async function handler(req, res) {
           "description": "En kort säljande beskrivning (max 2 meningar)",
           "price": "Ungefärligt pris i SEK",
           "category": "Kategori",
-          "image_base64": "PURE_BASE64_STRING_HERE"
+          "image_keyword": "search term"
         }
       ]
     `;
@@ -56,7 +56,22 @@ export default async function handler(req, res) {
 
         try {
             const suggestions = JSON.parse(cleanText);
-            return res.status(200).json(suggestions);
+
+            // Add Unsplash image URLs as a fallback since Gemini Image Gen is restricted
+            const suggestionsWithImages = suggestions.map(item => {
+                const keyword = encodeURIComponent(item.image_keyword || item.name);
+                return {
+                    ...item,
+                    // Use Unsplash Source for reliable professional product images
+                    image_url: `https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop&sig=${Math.random()}`, // Default fallback
+                    // Better approach: use a placeholder or try to match keyword if possible
+                    // Since Unsplash Source is deprecated, we'll use a curated set or a search-based URL if available
+                    // For now, let's use a high-quality product placeholder that varies by keyword
+                    image_url: `https://loremflickr.com/800/800/${keyword}/all`
+                };
+            });
+
+            return res.status(200).json(suggestionsWithImages);
         } catch (parseError) {
             console.error('Failed to parse Gemini response:', text, parseError);
             return res.status(500).json({ error: 'Invalid response format from AI' });
@@ -65,8 +80,8 @@ export default async function handler(req, res) {
         console.error('Error generating gifts:', error);
         return res.status(500).json({
             error: 'Failed to generate gift suggestions',
-            details: error.message,
-            model: "gemini-2.5-flash-image"
+            message: error.message,
+            tip: "Check your Gemini API quota for gemini-2.5-flash-image"
         });
     }
 }
