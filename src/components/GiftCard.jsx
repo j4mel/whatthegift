@@ -8,8 +8,8 @@ const GiftCard = ({ product, index }) => {
     const cleanName = displayName.replace(/[^\w\s-]/gi, '').trim();
     const searchTopic = encodeURIComponent(cleanName);
 
-    // Using AI-generated image URL from Pollinations via API
-    const imageUrl = product.image_url || `https://images.unsplash.com/photo-1549463591-147604343a30?q=80&w=800&h=800&fit=crop`;
+    // Using Base64 image from Gemini
+    const imageUrl = product.image_base64 ? `data:image/png;base64,${product.image_base64}` : `https://images.unsplash.com/photo-1549463591-147604343a30?q=80&w=800&h=800&fit=crop`;
     const backupImageUrl = `https://images.unsplash.com/photo-1549463591-147604343a30?q=80&w=800&h=800&fit=crop`;
 
     const link = generateAmazonLink(displayName);

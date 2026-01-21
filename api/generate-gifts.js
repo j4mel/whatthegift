@@ -13,7 +13,8 @@ export default async function handler(req, res) {
 
     try {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+        // Use gemini-2.5-flash-image for image generation
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-image" });
 
         const { recipient, budget, profile } = req.body;
 
@@ -24,9 +25,11 @@ export default async function handler(req, res) {
       - Budget: ${budget} per gåva
       - Profil: ${profile}
 
-      VIKTIGT FÖR BILDER OCH NAMN: 
-      1. För varje present, skapa en "image_prompt" (på ENGELSKA, 5-8 ord) som beskriver en realistisk och proffsig produktbild.
-      2. "name" ska vara kort och rent (1-3 ord).
+      VIKTIGT FÖR BILDER OCH FORMAT: 
+      1. Generera en unik bild för varje present. 
+      2. Varje bild MÅSTE vara exakt 512x512 pixlar för att optimera prestanda och hålla nere Base64-storleken (för att undvika Vercels payload-gränser).
+      3. Returnera bilden som en ren Base64-kodad PNG-sträng i fältet "image_base64".
+      4. "name" ska vara kort och rent (1-3 ord).
 
       Svara ENDAST med ett giltigt JSON-objekt. Inget annat.
       Strukturen ska vara en array av objekt så här:
@@ -36,7 +39,7 @@ export default async function handler(req, res) {
           "description": "En kort säljande beskrivning (max 2 meningar)",
           "price": "Ungefärligt pris i SEK",
           "category": "Kategori",
-          "image_prompt": "Descriptive product photo prompt in English"
+          "image_base64": "PURE_BASE64_STRING_HERE"
         }
       ]
     `;
@@ -53,17 +56,7 @@ export default async function handler(req, res) {
 
         try {
             const suggestions = JSON.parse(cleanText);
-
-            // Add AI-generated image URLs using Pollinations.ai
-            const suggestionsWithImages = suggestions.map(item => {
-                const encodedPrompt = encodeURIComponent(`${item.image_prompt}, professional product photography, clean background, high resolution`);
-                return {
-                    ...item,
-                    image_url: `https://image.pollinations.ai/prompt/${encodedPrompt}?width=800&height=800&nologo=true&model=flux`
-                };
-            });
-
-            return res.status(200).json(suggestionsWithImages);
+            return res.status(200).json(suggestions);
         } catch (parseError) {
             console.error('Failed to parse Gemini response:', text, parseError);
             return res.status(500).json({ error: 'Invalid response format from AI' });
