@@ -1,13 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ExternalLink, Tag } from 'lucide-react';
 import { generateAmazonLink } from '../utils/affiliate';
 import { motion } from 'framer-motion';
 
 const GiftCard = ({ product, index }) => {
+    const [imageStatus, setImageStatus] = useState('loading'); // loading, success, error
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
     const displayName = product.title || product.name;
-    // SVG Content from Gemini
-    const svgContent = product.image_svg;
-    const backupImageUrl = `https://images.unsplash.com/photo-1549463591-147604343a30?q=80&w=800&h=800&fit=crop`;
+    const keyword = encodeURIComponent(product.image_keyword || "gift");
+
+    // Multi-layer image strategy
+    const imageUrls = [
+        `https://source.unsplash.com/800x800/?${keyword},product,minimal`,
+        `https://loremflickr.com/800/800/${keyword},product/all?lock=${index}`,
+        `https://images.unsplash.com/photo-1549463591-147604343a30?q=80&w=800&h=800&fit=crop` // Definitive fallback
+    ];
+
+    const currentUrl = imageUrls[currentImageIndex];
+
+    const handleImageError = () => {
+        if (currentImageIndex < imageUrls.length - 1) {
+            setCurrentImageIndex(prev => prev + 1);
+        } else {
+            setImageStatus('error');
+        }
+    };
+
+    const handleImageLoad = (e) => {
+        // Unsplash Source sometimes returns a "blank" tracking pixel or 1x1 image if no match
+        if (e.target.naturalWidth <= 1 && currentImageIndex < imageUrls.length - 1) {
+            handleImageError();
+        } else {
+            setImageStatus('success');
+        }
+    };
 
     const link = generateAmazonLink(displayName);
 
@@ -18,19 +45,20 @@ const GiftCard = ({ product, index }) => {
             transition={{ delay: index * 0.15, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="group relative flex flex-col h-full bg-white/40 backdrop-blur-xl border border-white/40 rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] hover:-translate-y-1"
         >
-            <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
-                {svgContent ? (
-                    <div
-                        className="h-full w-full flex items-center justify-center p-8 transition-transform duration-700 group-hover:scale-105"
-                        dangerouslySetInnerHTML={{ __html: svgContent }}
-                    />
-                ) : (
-                    <img
-                        src={backupImageUrl}
-                        alt={displayName}
-                        className="h-full w-full object-cover transition-opacity duration-700 group-hover:scale-110"
-                    />
+            <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
+                {/* Skeleton Loader */}
+                {imageStatus === 'loading' && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100 animate-pulse" />
                 )}
+
+                <img
+                    src={currentUrl}
+                    alt={displayName}
+                    className={`h-full w-full object-cover transition-all duration-700 group-hover:scale-110 ${imageStatus === 'success' ? 'opacity-100' : 'opacity-0'
+                        }`}
+                    onLoad={handleImageLoad}
+                    onError={handleImageError}
+                />
 
                 <div className="absolute top-4 right-4 glass px-4 py-2 rounded-2xl text-xs font-bold text-slate-900 border border-white/40 shadow-sm z-10">
                     {product.price}

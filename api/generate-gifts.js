@@ -13,7 +13,6 @@ export default async function handler(req, res) {
 
     try {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        // Using gemini-2.5-flash-lite as it is stable and good at generating structured data/SVG
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
         const { recipient, budget, profile } = req.body;
@@ -25,23 +24,18 @@ export default async function handler(req, res) {
       - Budget: ${budget} per gåva
       - Profil: ${profile}
 
-      VIKTIGT FÖR FORMAT OCH BILDER: 
+      VIKTIGT FÖR BILDER OCH RELEVANS: 
       1. Svaret SKA vara en array med exakt 3 objekt.
-      2. "name" ska vara kort och rent (1-3 ord).
-      3. "image_svg" SKA vara en komplett, modern och stilren SVG-kod som illustrerar produkten.
-         - Använd moderna färger, gradients och minimalistisk design.
-         - SVG ska ha viewBox="0 0 400 300" och vara responsiv.
-         - Undvik komplexa foton, fokusera på igenkännbara produktillustrationer (t.ex. en snygg termos, ett anteckningsblock, etc).
+      2. "image_keyword" MÅSTE vara ett VÄLDIGT SPECIFIKT engelskt substantiv (1-2 ord) som beskriver produkten perfekt för bildsökning (t.ex. "leather-journal", "insulated-flask", "noise-canceling-headphones"). Undvik korta generiska ord.
 
-      Svara ENDAST med ett giltigt JSON-objekt. Inget annat.
-      Strukturen ska vara:
+      Svara ENDAST med ett giltigt JSON-objekt i en array. Inget annat.
       [
         {
           "name": "Produktnamn",
           "description": "En kort säljande beskrivning (max 2 meningar)",
           "price": "Ungefärligt pris i SEK",
           "category": "Kategori",
-          "image_svg": "<svg ...>...</svg>"
+          "image_keyword": "specific-keyword"
         }
       ]
     `;
@@ -50,7 +44,6 @@ export default async function handler(req, res) {
         const response = await result.response;
         const text = response.text();
 
-        // More robust JSON cleaning
         let cleanText = text.trim();
         if (cleanText.includes('```')) {
             cleanText = cleanText.replace(/```json\n?|```\n?/g, '').trim();
@@ -65,9 +58,6 @@ export default async function handler(req, res) {
         }
     } catch (error) {
         console.error('Error generating gifts:', error);
-        return res.status(500).json({
-            error: 'Failed to generate gift suggestions',
-            message: error.message
-        });
+        return res.status(500).json({ error: 'Failed to generate gift suggestions' });
     }
 }
