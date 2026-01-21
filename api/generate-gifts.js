@@ -29,7 +29,7 @@ export default async function handler(req, res) {
       VIKTIGT FÖR FORMAT: 
       1. Ge mig 3 förslag.
       2. "name" ska vara kort och rent (1-3 ord).
-      3. "image_keyword" ska vara ett engelskt ord eller kort fras (1-2 ord) som bäst beskriver produkten för en bildsökning (t.ex. "leather notebook", "premium coffee").
+      3. "image_keyword" MÅSTE vara ett ENGELSKT ord eller kort fras (1-2 ord) som beskriver produkten (t.ex. "keyboard", "coffee beans", "notebook"). Detta används för bildsöknig.
 
       Svara ENDAST med ett giltigt JSON-objekt. Inget annat.
       Strukturen ska vara en array av objekt så här:
@@ -39,7 +39,7 @@ export default async function handler(req, res) {
           "description": "En kort säljande beskrivning (max 2 meningar)",
           "price": "Ungefärligt pris i SEK",
           "category": "Kategori",
-          "image_keyword": "search term"
+          "image_keyword": "english word"
         }
       ]
     `;
@@ -57,17 +57,14 @@ export default async function handler(req, res) {
         try {
             const suggestions = JSON.parse(cleanText);
 
-            // Add Unsplash image URLs as a fallback since Gemini Image Gen is restricted
-            const suggestionsWithImages = suggestions.map(item => {
-                const keyword = encodeURIComponent(item.image_keyword || item.name);
+            // Add High-Quality Unsplash images based on English keywords
+            const suggestionsWithImages = suggestions.map((item, index) => {
+                const keyword = encodeURIComponent(item.image_keyword || "product");
                 return {
                     ...item,
-                    // Use Unsplash Source for reliable professional product images
-                    image_url: `https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop&sig=${Math.random()}`, // Default fallback
-                    // Better approach: use a placeholder or try to match keyword if possible
-                    // Since Unsplash Source is deprecated, we'll use a curated set or a search-based URL if available
-                    // For now, let's use a high-quality product placeholder that varies by keyword
-                    image_url: `https://loremflickr.com/800/800/${keyword}/all`
+                    // Use source.unsplash.com/featured/?<keyword> for high-quality themed images
+                    // Adding a random 'sig' or 'v' parameter to prevent browser caching of the same image
+                    image_url: `https://source.unsplash.com/800x800/?${keyword}&sig=${index}-${Math.random().toString(36).substring(7)}`
                 };
             });
 
