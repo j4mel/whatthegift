@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { ExternalLink, Tag } from 'lucide-react';
-import { generateAmazonLink } from '../utils/affiliate';
-import { motion } from 'framer-motion';
 
 const GiftCard = ({ product, index }) => {
     const [imageStatus, setImageStatus] = useState('loading'); // loading, success, error
