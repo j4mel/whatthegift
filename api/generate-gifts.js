@@ -29,7 +29,7 @@ export default async function handler(req, res) {
       VIKTIGT FÖR FORMAT: 
       1. Ge mig 3 förslag.
       2. "name" ska vara kort och rent (1-3 ord).
-      3. "image_keyword" MÅSTE vara ett ENGELSKT ord eller kort fras (1-2 ord) som beskriver produkten (t.ex. "keyboard", "coffee beans", "notebook"). Detta används för bildsöknig.
+      3. "image_keyword" MÅSTE vara ett enkelt ENGELSKT SUBSTANTIV (EXAKT 1 ORD) som beskriver produkten (t.ex. "mug", "coffee", "notebook", "bottle"). Detta är avgörande för bilderna.
 
       Svara ENDAST med ett giltigt JSON-objekt. Inget annat.
       Strukturen ska vara en array av objekt så här:
@@ -39,7 +39,7 @@ export default async function handler(req, res) {
           "description": "En kort säljande beskrivning (max 2 meningar)",
           "price": "Ungefärligt pris i SEK",
           "category": "Kategori",
-          "image_keyword": "english word"
+          "image_keyword": "word"
         }
       ]
     `;
@@ -59,12 +59,10 @@ export default async function handler(req, res) {
 
             // Add Reliable Loremflickr images based on English keywords
             const suggestionsWithImages = suggestions.map((item, index) => {
-                // Combine product keyword with 'gift' or 'product' for better context
-                const keyword = encodeURIComponent(`${item.image_keyword || "gift"},product`);
+                const keyword = encodeURIComponent(item.image_keyword || "gift");
                 return {
                     ...item,
-                    // Loremflickr is generally more reliable for simple keyword redirects
-                    image_url: `https://loremflickr.com/800/800/${keyword}/all?lock=${index}`
+                    image_url: `https://loremflickr.com/800/800/${keyword},product/all?lock=${index + Math.floor(Math.random() * 100)}`
                 };
             });
 

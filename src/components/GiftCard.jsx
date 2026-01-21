@@ -30,14 +30,17 @@ const GiftCard = ({ product, index }) => {
                 <img
                     src={imageUrl}
                     alt={displayName}
-                    className="h-full w-full object-cover transition-opacity duration-500 group-hover:scale-110 opacity-0"
+                    className="h-full w-full object-cover transition-opacity duration-700 group-hover:scale-110 opacity-0"
                     onLoad={(e) => {
-                        e.target.style.opacity = '1';
+                        e.target.classList.remove('opacity-0');
+                        e.target.classList.add('opacity-100');
                     }}
                     onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = backupImageUrl;
-                        e.target.style.opacity = '1';
+                        if (e.target.src !== backupImageUrl) {
+                            e.target.src = backupImageUrl;
+                        }
+                        e.target.classList.remove('opacity-0');
+                        e.target.classList.add('opacity-100');
                     }}
                 />
                 <div className="absolute top-4 right-4 glass px-4 py-2 rounded-2xl text-xs font-bold text-slate-900 border border-white/40 shadow-sm z-10">
