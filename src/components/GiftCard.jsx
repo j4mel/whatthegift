@@ -26,17 +26,21 @@ const GiftCard = ({ product, index }) => {
             transition={{ delay: index * 0.15, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="group relative flex flex-col h-full bg-white/40 backdrop-blur-xl border border-white/40 rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] hover:-translate-y-1"
         >
-            <div className="relative aspect-[4/3] overflow-hidden bg-slate-100/50">
+            <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
                 <img
                     src={imageUrl}
                     alt={displayName}
-                    className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                    className="h-full w-full object-cover transition-opacity duration-500 group-hover:scale-110 opacity-0"
+                    onLoad={(e) => {
+                        e.target.style.opacity = '1';
+                    }}
                     onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = backupImageUrl;
+                        e.target.style.opacity = '1';
                     }}
                 />
-                <div className="absolute top-4 right-4 glass px-4 py-2 rounded-2xl text-xs font-bold text-slate-900 border border-white/40 shadow-sm">
+                <div className="absolute top-4 right-4 glass px-4 py-2 rounded-2xl text-xs font-bold text-slate-900 border border-white/40 shadow-sm z-10">
                     {product.price}
                 </div>
             </div>

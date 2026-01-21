@@ -57,14 +57,14 @@ export default async function handler(req, res) {
         try {
             const suggestions = JSON.parse(cleanText);
 
-            // Add High-Quality Unsplash images based on English keywords
+            // Add Reliable Loremflickr images based on English keywords
             const suggestionsWithImages = suggestions.map((item, index) => {
-                const keyword = encodeURIComponent(item.image_keyword || "product");
+                // Combine product keyword with 'gift' or 'product' for better context
+                const keyword = encodeURIComponent(`${item.image_keyword || "gift"},product`);
                 return {
                     ...item,
-                    // Use source.unsplash.com/featured/?<keyword> for high-quality themed images
-                    // Adding a random 'sig' or 'v' parameter to prevent browser caching of the same image
-                    image_url: `https://source.unsplash.com/800x800/?${keyword}&sig=${index}-${Math.random().toString(36).substring(7)}`
+                    // Loremflickr is generally more reliable for simple keyword redirects
+                    image_url: `https://loremflickr.com/800/800/${keyword}/all?lock=${index}`
                 };
             });
 
