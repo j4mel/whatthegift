@@ -26,10 +26,10 @@ export default async function handler(req, res) {
       - Budget: ${budget} per gåva
       - Profil: ${profile}
 
-      VIKTIGT FÖR FORMAT: 
+      VIKTIGT FÖR BILDRELEVANS: 
       1. Ge mig 3 förslag.
       2. "name" ska vara kort och rent (1-3 ord).
-      3. "image_keyword" MÅSTE vara ett enkelt ENGELSKT SUBSTANTIV (EXAKT 1 ORD) som beskriver produkten (t.ex. "mug", "coffee", "notebook", "bottle"). Detta är avgörande för bilderna.
+      3. "image_keyword" MÅSTE vara ett VÄLDIGT SPECIFIKT engelskt substantiv (1-2 ord) som beskriver produkten exakt (t.ex. "waterbottle", "coffee-beans", "laptop-sleeve", "journal"). Undvik breda ord som bara "bottle" eller "product".
 
       Svara ENDAST med ett giltigt JSON-objekt. Inget annat.
       Strukturen ska vara en array av objekt så här:
@@ -39,7 +39,7 @@ export default async function handler(req, res) {
           "description": "En kort säljande beskrivning (max 2 meningar)",
           "price": "Ungefärligt pris i SEK",
           "category": "Kategori",
-          "image_keyword": "word"
+          "image_keyword": "specific-word"
         }
       ]
     `;
@@ -57,12 +57,13 @@ export default async function handler(req, res) {
         try {
             const suggestions = JSON.parse(cleanText);
 
-            // Add Reliable Loremflickr images based on English keywords
+            // Add High-Quality Unsplash images based on specific English keywords
             const suggestionsWithImages = suggestions.map((item, index) => {
                 const keyword = encodeURIComponent(item.image_keyword || "gift");
                 return {
                     ...item,
-                    image_url: `https://loremflickr.com/800/800/${keyword},product/all?lock=${index + Math.floor(Math.random() * 100)}`
+                    // Using Unsplash Featured with 'product' and 'clean' qualifiers for better relevance
+                    image_url: `https://source.unsplash.com/featured/800x800?${keyword},product,minimal`
                 };
             });
 
