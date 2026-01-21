@@ -13,8 +13,7 @@ export default async function handler(req, res) {
 
     try {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        // Switching back to gemini-2.5-flash-lite as gemini-1.5-flash returned 404
-        // and gemini-2.5-flash-image has 0 quota.
+        // Using gemini-2.5-flash-lite as it is stable and good at generating structured data/SVG
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
         const { recipient, budget, profile } = req.body;
@@ -26,20 +25,23 @@ export default async function handler(req, res) {
       - Budget: ${budget} per gåva
       - Profil: ${profile}
 
-      VIKTIGT FÖR BILDRELEVANS: 
-      1. Ge mig 3 förslag.
+      VIKTIGT FÖR FORMAT OCH BILDER: 
+      1. Svaret SKA vara en array med exakt 3 objekt.
       2. "name" ska vara kort och rent (1-3 ord).
-      3. "image_keyword" MÅSTE vara ett VÄLDIGT SPECIFIKT engelskt substantiv (1-2 ord) som beskriver produkten exakt (t.ex. "waterbottle", "coffee-beans", "laptop-sleeve", "journal"). Undvik breda ord som bara "bottle" eller "product".
+      3. "image_svg" SKA vara en komplett, modern och stilren SVG-kod som illustrerar produkten.
+         - Använd moderna färger, gradients och minimalistisk design.
+         - SVG ska ha viewBox="0 0 400 300" och vara responsiv.
+         - Undvik komplexa foton, fokusera på igenkännbara produktillustrationer (t.ex. en snygg termos, ett anteckningsblock, etc).
 
       Svara ENDAST med ett giltigt JSON-objekt. Inget annat.
-      Strukturen ska vara en array av objekt så här:
+      Strukturen ska vara:
       [
         {
           "name": "Produktnamn",
           "description": "En kort säljande beskrivning (max 2 meningar)",
           "price": "Ungefärligt pris i SEK",
           "category": "Kategori",
-          "image_keyword": "specific-word"
+          "image_svg": "<svg ...>...</svg>"
         }
       ]
     `;
@@ -56,18 +58,7 @@ export default async function handler(req, res) {
 
         try {
             const suggestions = JSON.parse(cleanText);
-
-            // Add High-Quality Unsplash images based on specific English keywords
-            const suggestionsWithImages = suggestions.map((item, index) => {
-                const keyword = encodeURIComponent(item.image_keyword || "gift");
-                return {
-                    ...item,
-                    // Using Unsplash Featured with 'product' and 'clean' qualifiers for better relevance
-                    image_url: `https://source.unsplash.com/featured/800x800?${keyword},product,minimal`
-                };
-            });
-
-            return res.status(200).json(suggestionsWithImages);
+            return res.status(200).json(suggestions);
         } catch (parseError) {
             console.error('Failed to parse Gemini response:', text, parseError);
             return res.status(500).json({ error: 'Invalid response format from AI' });
@@ -76,8 +67,7 @@ export default async function handler(req, res) {
         console.error('Error generating gifts:', error);
         return res.status(500).json({
             error: 'Failed to generate gift suggestions',
-            message: error.message,
-            tip: "Check your Gemini API quota for gemini-2.5-flash-image"
+            message: error.message
         });
     }
 }

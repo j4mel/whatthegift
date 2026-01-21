@@ -5,16 +5,8 @@ import { motion } from 'framer-motion';
 
 const GiftCard = ({ product, index }) => {
     const displayName = product.title || product.name;
-    const cleanName = displayName.replace(/[^\w\s-]/gi, '').trim();
-    const searchTopic = encodeURIComponent(cleanName);
-
-    // Priority: base64 -> image_url -> fallback
-    let imageUrl = `https://images.unsplash.com/photo-1549463591-147604343a30?q=80&w=800&h=800&fit=crop`;
-    if (product.image_base64) {
-        imageUrl = `data:image/png;base64,${product.image_base64}`;
-    } else if (product.image_url) {
-        imageUrl = product.image_url;
-    }
+    // SVG Content from Gemini
+    const svgContent = product.image_svg;
     const backupImageUrl = `https://images.unsplash.com/photo-1549463591-147604343a30?q=80&w=800&h=800&fit=crop`;
 
     const link = generateAmazonLink(displayName);
@@ -27,22 +19,19 @@ const GiftCard = ({ product, index }) => {
             className="group relative flex flex-col h-full bg-white/40 backdrop-blur-xl border border-white/40 rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] hover:-translate-y-1"
         >
             <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
-                <img
-                    src={imageUrl}
-                    alt={displayName}
-                    className="h-full w-full object-cover transition-opacity duration-700 group-hover:scale-110 opacity-0"
-                    onLoad={(e) => {
-                        e.target.classList.remove('opacity-0');
-                        e.target.classList.add('opacity-100');
-                    }}
-                    onError={(e) => {
-                        if (e.target.src !== backupImageUrl) {
-                            e.target.src = backupImageUrl;
-                        }
-                        e.target.classList.remove('opacity-0');
-                        e.target.classList.add('opacity-100');
-                    }}
-                />
+                {svgContent ? (
+                    <div
+                        className="h-full w-full flex items-center justify-center p-8 transition-transform duration-700 group-hover:scale-105"
+                        dangerouslySetInnerHTML={{ __html: svgContent }}
+                    />
+                ) : (
+                    <img
+                        src={backupImageUrl}
+                        alt={displayName}
+                        className="h-full w-full object-cover transition-opacity duration-700 group-hover:scale-110"
+                    />
+                )}
+
                 <div className="absolute top-4 right-4 glass px-4 py-2 rounded-2xl text-xs font-bold text-slate-900 border border-white/40 shadow-sm z-10">
                     {product.price}
                 </div>
