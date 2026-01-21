@@ -13,8 +13,8 @@ export default async function handler(req, res) {
 
     try {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        // Use gemini-2.5-flash-image for image generation
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-image" });
+        // Use explicit model path
+        const model = genAI.getGenerativeModel({ model: "models/gemini-2.5-flash-image" });
 
         const { recipient, budget, profile } = req.body;
 
@@ -63,6 +63,10 @@ export default async function handler(req, res) {
         }
     } catch (error) {
         console.error('Error generating gifts:', error);
-        return res.status(500).json({ error: 'Failed to generate gift suggestions' });
+        return res.status(500).json({
+            error: 'Failed to generate gift suggestions',
+            details: error.message,
+            model: "gemini-2.5-flash-image"
+        });
     }
 }
