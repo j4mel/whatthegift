@@ -13,9 +13,9 @@ export default async function handler(req, res) {
 
     try {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        // Using gemini-1.5-flash as it has the most stable quota for free tier
-        // gemini-2.5-flash-image appears to have 0 quota for this key
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        // Switching back to gemini-2.5-flash-lite as gemini-1.5-flash returned 404
+        // and gemini-2.5-flash-image has 0 quota.
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
         const { recipient, budget, profile } = req.body;
 
